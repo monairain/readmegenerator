@@ -1,9 +1,10 @@
+// Required modules
 const fs = require("fs");
 const path = require('path');
 const inquirer = require("inquirer");
 const generateMarkdown = require("./utils/generateMarkdown");
 
-// array of questions for user
+// Array of questions for user input
 const questions = [
     {
         type: 'input',
@@ -35,14 +36,13 @@ const questions = [
         type: 'input',
         name: 'installation',
         message: 'What command should be run to install dependencies?',
-        default: 'npm i'   
+        default: 'npm i'   // Default installation command
     },
-
     {
         type: 'input',
         name: 'test',
         message: 'What command should be run to carry out tests?',
-        default: 'npm test',
+        default: 'npm test' // Default testing command
     },
     {
         type: 'input',
@@ -58,16 +58,27 @@ const questions = [
 
 // Function to write README file
 function writeToFile(fileName, data) {
+    // Determine the full path of the output file
     const filePath = path.join(process.cwd(), fileName);
+    // Write the data to the specified file
     return fs.writeFileSync(filePath, data);
 }
 
 // Function to initialize the program
 function init() {
+    // Use inquirer to prompt the user with questions
     inquirer.prompt(questions).then((response) => {
         console.log('\nGenerating README-gen.md...');
         writeToFile('README-gen.md', generateMarkdown({ ...response }));
         console.log('README-gen.md successfully generated!\n');
+
+        // Display the user's input
+        console.log('Your input:\n');
+        for (const key in response) {
+            if (response.hasOwnProperty(key)) {
+                console.log(`${key}: ${response[key]}`);
+            }
+        }
     });
 }
 
